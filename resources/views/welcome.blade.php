@@ -55,7 +55,7 @@
                 <i class="fas fa-leaf"></i>
                 Registrarse como Agricultor
             </a>
-            <a href="#" onclick="alert('La vista de productos estará disponible pronto.'); return false;"
+            <a href="{{ route('productos.publicos') }}"
                class="inline-flex items-center justify-center gap-2 border border-green-700 text-green-700 font-medium rounded-md px-6 py-3 hover:bg-green-50">
                 <i class="fas fa-users"></i>
                 Comprar Productos

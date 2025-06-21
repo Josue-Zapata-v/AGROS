@@ -22,7 +22,7 @@
             {{-- Logo desde URL --}}
         <a href="{{ route('agricultor.dashboard') }}">
 
-            <img src="https://www.dropbox.com/scl/fi/1x7gbiqskthx5flkd6bcj/logo-2-1.png?rlkey=m7zlwuggwupa0208r2tfjz2gi&st=a7fo2t40&dl=1" class="h-12 w-auto object-contain shrink-0" alt="Logo AGROS" >
+            <img src="https://www.dropbox.com/scl/fi/1x7gbiqskthx5flkd6bcj/logo-2-1.png?rlkey=m7zlwuggwupa0208r2tfjz2gi&st=a7fo2t40&dl=1" class="h-10 w-auto" alt="Logo AGROS" >
         </a>    
         </div>
         <div class="flex items-center gap-4">

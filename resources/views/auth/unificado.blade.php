@@ -50,6 +50,11 @@
             @error('password')
                 <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
             @enderror
+            <div class="mb-4 text-right">
+                <a href="{{ route('password.request') }}" class="text-sm text-[#1B6B3A] hover:underline">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
 
             <button type="submit" class="w-full bg-[#1B6B3A] text-white font-semibold py-3 rounded-md hover:bg-[#16522a] transition-colors">
                 Iniciar Sesión
@@ -72,6 +77,20 @@
             <input id="email_register" name="email" type="email" value="{{ old('email') }}" required
                 class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A]" />
             @error('email')
+                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
+            @enderror
+            {{-- Teléfono --}}
+            <label   for="phone" class="block text-sm font-semibold mb-1">Teléfono</label>
+            <input id="phone" name="phone" type="text" value="{{ old('phone') }}" required maxlength="9" minlength="9" pattern="\d{9}"
+                class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A]" />
+            @error('phone')
+                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
+            @enderror
+            {{-- Dirección --}}
+            <label for="direccion" class="block text-sm font-semibold mb-1">Dirección</label>
+            <input id="direccion" name="direccion" type="text" value="{{ old('direccion') }}" required
+                class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A]" />
+            @error('direccion')
                 <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
             @enderror
 

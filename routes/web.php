@@ -7,6 +7,10 @@ use App\Http\Controllers\Agricultor\ProductoController;
 use App\Http\Controllers\Agricultor\PedidoController;
 use App\Http\Controllers\Agricultor\PostulacionTransportistaController;
 use App\Http\Controllers\Agricultor\PerfilController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Publico\CatalogoPublicoController;
+
 
 
 // Página principal
@@ -70,6 +74,25 @@ Route::get('/dashboard-transportista', function () {
 
 // 👉 Ruta unificada de acceso (login/registro en una sola vista)
 Route::view('/acceso', 'auth.unificado')->name('auth.unificado');
+// Solicitud del enlace de restablecimiento
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.request');
+
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+
+// Mostrar formulario para nueva contraseña
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');
+
+Route::get('/productos-publicos', [\App\Http\Controllers\Publico\CatalogoPublicoController::class, 'index'])->name('productos.publicos');
 
 
 // Rutas generadas por Breeze
