@@ -6,6 +6,11 @@
     <title>AGROS - Agricultor</title>
     <!-- Font Awesome (íconos) -->
      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+     <!-- Tom Select CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet" />
+<!-- Tom Select JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -14,6 +19,9 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    
+    @stack('styles')
+
 </head>
 <body class="bg-[#f4fdef] text-[#1b462b] min-h-screen">
     {{-- Header superior --}}
@@ -73,6 +81,22 @@
         <section class="flex-1 space-y-4">
             @yield('content')
         </section>
+        
     </main>
+    @stack('scripts')
+    <script>
+    function mostrarNombreArchivo() {
+        const input = document.getElementById('imagen');
+        const nombreArchivo = document.getElementById('nombre-archivo');
+
+        if (input.files.length > 0) {
+            nombreArchivo.textContent = '🖼 Imagen seleccionada: ' + input.files[0].name;
+        } else {
+            nombreArchivo.textContent = '';
+        }
+    }
+</script>
+
+
 </body>
 </html>

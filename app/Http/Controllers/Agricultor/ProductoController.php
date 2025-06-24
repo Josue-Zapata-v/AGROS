@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Categoria;
+
 
 class ProductoController extends Controller
 {
@@ -13,11 +15,13 @@ class ProductoController extends Controller
     {
         $productos = Producto::where('agricultor_id', auth()->id())->get();
         return view('agricultor.dashboard', compact('productos'));
+        
     }
 
     public function create()
     {
-        return view('agricultor.productos.create');
+        $categorias = Categoria::all();
+        return view('agricultor.productos.create', compact('categorias'));
     }
 
     public function store(Request $request)
@@ -30,15 +34,21 @@ class ProductoController extends Controller
 
         $data['agricultor_id'] = Auth::id();
 
-        Producto::create($data);
-
+        $producto= Producto::create($data);
+        if ($request->has('categorias')) {
+            $producto->categorias()->sync($request->categorias); 
+        }
         return redirect()->route('agricultor.dashboard')->with('success', 'Producto creado con éxito.');
+
+        
+
     }
 
     public function edit($id)
     {
         $producto = $this->obtenerProducto($id);
-        return view('agricultor.productos.edit', compact('producto'));
+        $categorias = Categoria::all();
+        return view('agricultor.productos.edit', compact('producto', 'categorias'));
     }
 
     public function update(Request $request, $id)
@@ -51,6 +61,10 @@ class ProductoController extends Controller
         }
 
         $producto->update($data);
+
+        if ($request->has('categorias')) {
+            $producto->categorias()->sync($request->categorias);
+        }
 
         return redirect()->route('agricultor.dashboard')->with('success', 'Producto actualizado.');
     }
