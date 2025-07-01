@@ -10,6 +10,9 @@ use App\Http\Controllers\Agricultor\PerfilController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Publico\CatalogoPublicoController;
+use App\Http\Controllers\Comprador\CompradorController;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\Comprador\PedidoController as PedidoCompradorController;
 
 
 
@@ -64,9 +67,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 // Dashboards básicos para los otros roles
-Route::get('/dashboard-comprador', function () {
-    return 'Bienvenido Comprador';
-})->middleware(['auth', 'verified'])->name('comprador.dashboard');
+Route::get('/dashboard-comprador', [CompradorController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('comprador.dashboard');
 
 Route::get('/dashboard-transportista', function () {
     return 'Bienvenido Transportista';
@@ -92,7 +95,32 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
     ->middleware('guest')
     ->name('password.update');
 
-Route::get('/productos-publicos', [\App\Http\Controllers\Publico\CatalogoPublicoController::class, 'index'])->name('productos.publicos');
+Route::get('/productos-publicos', [CatalogoPublicoController::class, 'index'])->name('productos.publicos');
+Route::get('/comprador/productos/{id}', [CompradorController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('comprador.productos.show');
+
+// web.php
+Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
+Route::post('/agregar-al-carrito', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])
+    ->middleware(['auth']) // Protege con auth
+    ->name('carrito.agregar');
+
+Route::post('/carrito/actualizar', [App\Http\Controllers\CarritoController::class, 'actualizarCantidad'])->name('carrito.actualizar');
+Route::delete('/carrito/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+
+Route::post('/carrito/entrega', [CarritoController::class, 'guardarEntrega'])
+    ->name('carrito.entrega.guardar');
+Route::get('/carrito/confirmacion', [CarritoController::class, 'confirmarPedido'])
+    ->name('carrito.confirmacion');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/mis-pedidos', [PedidoCompradorController::class, 'index'])->name('comprador.pedidos');
+});
+Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'verDetalle'])
+    ->middleware(['auth', 'verified'])
+    ->name('comprador.detalle');
 
 
 // Rutas generadas por Breeze

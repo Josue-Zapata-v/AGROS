@@ -1,12 +1,12 @@
 @extends('layouts.publico')
 
-@section('title', 'Catálogo de Productos')
+@section('title', 'Dashboard Comprador')
 
 @section('content')
 <!-- Fondo con patrón orgánico -->
-<div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 relative z-0">
     <!-- Elementos decorativos de fondo -->
-    <div class="absolute inset-0 opacity-10">
+    <div class="absolute inset-0 opacity-10 z-0 pointer-events-none">
         <div class="absolute top-20 left-10 w-32 h-32 bg-green-300 rounded-full blur-3xl animate-pulse"></div>
         <div class="absolute top-40 right-20 w-24 h-24 bg-emerald-300 rounded-full blur-2xl animate-pulse delay-1000"></div>
         <div class="absolute bottom-20 left-1/4 w-40 h-40 bg-teal-300 rounded-full blur-3xl animate-pulse delay-2000"></div>
@@ -47,14 +47,6 @@
         <section>
             <div class="mb-16 animate-fade-in">
                 <div class="bg-white/90 backdrop-blur-lg shadow-md rounded-2xl border border-gray-200 p-8 transition-all duration-300 hover:shadow-lg">
-                    <div class="flex items-center mb-6">
-                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-filter text-white text-sm"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800">
-                            Filtra y encuentra el producto ideal
-                        </h3>
-                    </div>
 
                     <form class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                         {{-- Búsqueda --}}
@@ -141,14 +133,19 @@
 
                     {{-- Botones de acción --}}
                     <div class="mt-auto flex flex-col gap-2">
-                        <a href="#"
+                        <a href="{{ route('comprador.productos.show', $producto->id) }}"
                             class="text-green-600 border border-green-500 hover:bg-green-50 rounded-lg px-4 py-2 text-sm text-center font-medium transition">
                             <i class="fas fa-info-circle mr-1"></i>Ver Detalles
                         </a>
-                        <button onclick="location.href='{{ route('auth.unificado') }}'"
-                                class="bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 text-sm text-center font-semibold transition">
-                            <i class="fas fa-shopping-cart mr-1"></i>Agregar al Carrito
-                        </button>
+                        <form class="form-agregar-carrito" data-producto-id="{{ $producto->id }}">
+                            @csrf
+                            <input type="hidden" name="cantidad" value="{{ $producto->min_kg_envio }}">
+                            <button type="submit"
+                                class="bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 text-sm text-center font-semibold transition w-full">
+                                <i class="fas fa-shopping-cart mr-1"></i>Agregar al Carrito
+                            </button>
+                        </form>
+
                     </div>
                 </article>
      
@@ -172,8 +169,45 @@
     </div>
 </div>
 
-
-
-<!-- JavaScript para efectos adicionales -->
-
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.form-agregar-carrito').forEach(form => {
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const productoId = form.dataset.productoId;
+            const cantidad   = form.querySelector('[name="cantidad"]').value;
+
+            const res = await fetch("{{ route('carrito.agregar') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    producto_id: productoId,
+                    cantidad: cantidad
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+
+                const carritoContador = document.getElementById('contador-carrito');
+                if (carritoContador) {
+                    carritoContador.textContent = data.total_items;
+                }
+
+                alert('✅ Producto agregado al carrito');
+            } else {
+                alert('❌ Error al agregar producto');
+            }
+        });
+    });
+});
+</script>
+@endpush

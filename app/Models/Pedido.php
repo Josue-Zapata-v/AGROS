@@ -8,7 +8,7 @@ class Pedido extends Model
 {
     protected $fillable = [
         'comprador_id', 'agricultor_id', 'total_kg', 'total_precio',
-        'direccion_entrega', 'estado'
+        'direccion_entrega', 'telefono_entrega', 'estado'
     ];
 
     public function comprador() {

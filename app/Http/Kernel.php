@@ -45,5 +45,8 @@ class Kernel extends HttpKernel
 
         // 👇 Esto es lo que activa tu middleware personalizado
         'profile.completed' => \App\Http\Middleware\CheckProfileCompletion::class,
+
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+
     ];
 }

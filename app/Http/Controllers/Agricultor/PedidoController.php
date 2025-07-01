@@ -19,4 +19,13 @@ class PedidoController extends Controller
 
         return view('agricultor.pedidos.index', compact('pedidos'));
     }
+
+    public function verDetalle($id)
+    {
+        $pedido = Pedido::with('detalles.producto')
+            ->where('comprador_id', auth()->id())
+            ->findOrFail($id);
+
+        return view('comprador.pedidos.detalle', compact('pedido'));
+}
 }
