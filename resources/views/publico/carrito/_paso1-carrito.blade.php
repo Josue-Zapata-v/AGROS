@@ -17,8 +17,16 @@
             $totalKg     += $item['cantidad'];
             $totalPrecio += $subtotal;
           @endphp
+          
+          <article 
+            class="flex flex-col sm:flex-row gap-4 items-center sm:items-start border border-gray-200 rounded-xl p-4 mb-5 shadow-sm transition hover:shadow-md"
+            data-id="{{ $item['id'] }}" 
+            data-stock="{{ $item['stock'] ?? 9999 }}" 
+            data-min="{{ $item['min_kg_envio'] ?? 1 }}" 
+            data-max="{{ $item['max_kg_envio'] ?? 9999 }}"
+            data-price="{{ $item['precio'] }}"  {{-- ✨ --}}
 
-          <article class="flex flex-col sm:flex-row gap-4 items-center sm:items-start border border-gray-200 rounded-xl p-4 mb-5 shadow-sm transition hover:shadow-md">
+          >
             <!-- Imagen del producto -->
             <div class="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-[#DFF6E4] to-[#F9E6C8] rounded-xl overflow-hidden">
               <img src="{{ $item['imagen'] ?? 'https://via.placeholder.com/40' }}" alt="{{ $item['nombre'] }}" class="w-12 h-12 object-contain" />
@@ -36,7 +44,18 @@
             <!-- Controles de cantidad -->
             <div class="flex items-center gap-2 mt-4 sm:mt-0">
               <button class="btn-decrement w-9 h-9 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 transition" data-id="{{ $item['id'] }}">−</button>
-              <span class="w-12 text-center font-semibold text-sm" id="cantidad-{{ $item['id'] }}">{{ $item['cantidad'] }} kg</span>
+              <input type="number"
+                class="input-cantidad w-16 text-center font-semibold border border-gray-300 rounded-md text-sm"
+                id="input-cantidad-{{ $item['id'] }}"
+                data-id="{{ $item['id'] }}"
+                data-stock="{{ $item['stock'] }}"
+                data-min="{{ $item['min_kg_envio'] }}"
+                data-max="{{ $item['max_kg_envio'] }}"
+                value="{{ $item['cantidad'] }}"
+                min="{{ $item['min_kg_envio'] }}"
+                max="{{ min($item['max_kg_envio'], $item['stock']) }}"
+              >
+
               <button class="btn-increment w-9 h-9 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 transition" data-id="{{ $item['id'] }}">+</button>
             </div>
 

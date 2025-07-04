@@ -8,7 +8,10 @@ class CatalogoPublicoController extends Controller
 {
     public function index()
     {
-        $productos = Producto::where('stock', '>', 0)->latest()->paginate(12);
+        $productos = Producto::whereColumn('stock', '>=', 'min_kg_envio')
+            ->latest()
+            ->paginate(12);
+
         return view('comprador.dashboard', compact('productos'));
     }
 }

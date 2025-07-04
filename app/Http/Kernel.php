@@ -47,6 +47,8 @@ class Kernel extends HttpKernel
         'profile.completed' => \App\Http\Middleware\CheckProfileCompletion::class,
 
         'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'comprador' => \App\Http\Middleware\RolComprador::class,
+
 
     ];
 }

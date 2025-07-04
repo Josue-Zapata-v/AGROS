@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\AgregarCarritoRequest;
 use App\Models\Producto;    // ← Importa Producto
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Pedido;
 use App\Models\DetallePedido; // Asegúrate de importar el modelo
 
@@ -13,6 +13,16 @@ class CarritoController extends Controller
 {
     public function index()
     {
+
+
+        if (Auth::check() && Auth::user()->role !== 'comprador') {
+            // Redirige o lanza error
+            return redirect()->route('agricultor.dashboard')->with('error', 'Solo los compradores pueden acceder al carrito.');
+
+            // También puedes usar:
+            // abort(403, 'Acceso no autor
+        }
+        
         $carrito = session()->get('carrito', []);
         return view('publico.carrito.index', compact('carrito'));
     }
@@ -40,32 +50,47 @@ class CarritoController extends Controller
         return redirect()->back()->with('success', 'Producto agregado al carrito');
     }   
 
+    
     public function actualizarCantidad(Request $request)
     {
-        $request->validate([
-            'producto_id' => 'required|exists:productos,id',
-            'accion'      => 'required|in:incrementar,disminuir',
-        ]);
-
         $carrito = session()->get('carrito', []);
+        $id      = $request->producto_id;
 
-        if (!isset($carrito[$request->producto_id])) {
+        // Validar existencia del producto en el carrito
+        if (!isset($carrito[$id])) {
             return response()->json(['error' => 'Producto no en carrito'], 404);
         }
 
-        $id = $request->producto_id;
-        if ($request->accion === 'incrementar') {
-            $carrito[$id]['cantidad']++;
-        } else {
-            $carrito[$id]['cantidad']--;
-            if ($carrito[$id]['cantidad'] < 1) {
-                unset($carrito[$id]);
+        // Validación para los dos escenarios
+        if ($request->has('accion')) {
+            $request->validate([
+                'producto_id' => 'required|exists:productos,id',
+                'accion'      => 'required|in:incrementar,disminuir',
+            ]);
+
+            if ($request->accion === 'incrementar') {
+                $carrito[$id]['cantidad']++;
+            } else {
+                $carrito[$id]['cantidad']--;
+                if ($carrito[$id]['cantidad'] < 1) {
+                    unset($carrito[$id]);
+                }
             }
+        } elseif ($request->has('cantidad_manual')) {
+            $request->validate([
+                'producto_id'     => 'required|exists:productos,id',
+                'cantidad_manual' => 'required|integer|min:1',
+            ]);
+
+            $carrito[$id]['cantidad'] = $request->cantidad_manual;
+        } else {
+            return response()->json(['error' => 'Petición inválida'], 400);
         }
 
+        // Guardar en sesión
         session()->put('carrito', $carrito);
 
-        // Recalcular totales globales
+        // Recalcular totales
         $totalKg     = array_sum(array_column($carrito, 'cantidad'));
         $totalPrecio = array_sum(array_map(fn($i) => $i['cantidad'] * $i['precio'], $carrito));
 
@@ -81,7 +106,6 @@ class CarritoController extends Controller
             'totalPrice' => number_format($totalPrecio, 2, '.', ''),
         ]);
     }
-
     public function eliminar($id)
     {
         $carrito = session()->get('carrito', []);
@@ -130,15 +154,31 @@ class CarritoController extends Controller
             'direccion_entrega'  => session('entrega.direccion'),
             'telefono_entrega'   => session('entrega.telefono'), // ← esta es la clave
         ]);
+        
+        // Validar stock de cada producto ANTES de crear los detalles del pedido
+        foreach ($carrito as $item) {
+            $producto = Producto::findOrFail($item['id']);
+
+            if ($item['cantidad'] > $producto->stock) {
+                return redirect()->route('carrito.index')->with('error', "El producto '{$producto->nombre}' no tiene suficiente stock. Disponible: {$producto->stock} kg.");
+            }
+        }
 
         foreach ($carrito as $item) {
+            $producto = Producto::findOrFail($item['id']);
+
+            // Crear detalle del pedido
             DetallePedido::create([
                 'pedido_id'      => $pedido->id,
                 'producto_id'    => $item['id'],
                 'cantidad'       => $item['cantidad'],
                 'precio_unitario'=> $item['precio'],
             ]);
-        }
+
+            // Descontar stock
+            $producto->stock -= $item['cantidad'];
+            $producto->save();
+        }      
 
         // Vaciar el carrito y su contador
         session()->forget('carrito');
@@ -176,26 +216,27 @@ class CarritoController extends Controller
         $cart = session()->get('carrito', []);
 
         $id   = $producto->id;
+        
+        $effectiveMax = min($producto->max_kg_envio, $producto->stock);
+        $finalQty = min(max($cantidad, $producto->min_kg_envio), $effectiveMax);
         $item = [
             'id'         => $id,
             'nombre'     => $producto->nombre,
             'precio'     => $producto->precio,
-            'cantidad'   => min(
-                               max($cantidad, $producto->min_kg_envio),
-                               $producto->max_kg_envio
-                             ),
+            'cantidad'   => $finalQty,
             'imagen'     => $producto->imagen 
                                ? asset("storage/{$producto->imagen}") 
                                : null,
             'agricultor' => $producto->agricultor->name ?? 'Productor',
             'agricultor_id' => $producto->agricultor_id,  // 👈 AGREGA ESTA LÍNEA
+            // 🔽 Agrega estos tres campos para el frontend JS
+            'stock'           => $producto->stock,
+            'min_kg_envio'    => $producto->min_kg_envio,
+            'max_kg_envio'    => $producto->max_kg_envio,
 
         ];
 
-        // Si ya existía, sumamos cantidades
-        if (isset($cart[$id])) {
-            $item['cantidad'] += $cart[$id]['cantidad'];
-        }
+        
 
         $cart[$id] = $item;
         session()->put('carrito', $cart);

@@ -153,34 +153,87 @@
 @push('scripts')
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const decrementBtn = document.getElementById('decrement');
-    const incrementBtn = document.getElementById('increment');
-    const cantidadInput = document.getElementById('cantidad');
-    const totalPriceEl = document.getElementById('total-price');
-    const minVal = {{ $producto->min_kg_envio }};
-    const maxVal = {{ $producto->max_kg_envio }};
+    const decrementBtn   = document.getElementById('decrement');
+    const incrementBtn   = document.getElementById('increment');
+    const cantidadInput  = document.getElementById('cantidad');
+    const totalPriceEl   = document.getElementById('total-price');
+    const addBtn         = document.querySelector('form button[type="submit"]');
+    const cantidadForm   = document.getElementById('cantidad-form');
+
+    const minVal     = {{ $producto->min_kg_envio }};
+    const maxVal     = {{ $producto->max_kg_envio }};
+    const stock      = {{ $producto->stock }};
     const pricePerKg = parseFloat("{{ number_format($producto->precio, 2, '.', '') }}");
 
+    // Devuelve el máximo permitido según stock y maxVal
+    function getEffectiveMax() {
+      return Math.min(maxVal, stock);
+    }
+
+    // Habilita o deshabilita los botones +/–
     function updateButtons(qty) {
+      const effectiveMax = getEffectiveMax();
       decrementBtn.disabled = qty <= minVal;
-      incrementBtn.disabled = qty >= maxVal;
+      incrementBtn.disabled = qty >= effectiveMax;
     }
 
-    function updateTotal() {
-      let qty = parseInt(cantidadInput.value, 10) || minVal;
-      qty = Math.min(Math.max(qty, minVal), maxVal);
+    // Maneja la validación en tiempo real (input)
+    function handleInput() {
+      const raw = Number(cantidadInput.value);
+      const qty = Math.floor(isNaN(raw) ? minVal : raw);
+      const effectiveMax = getEffectiveMax();
+
+      const isTooLow  = qty < minVal;
+      const isTooHigh = qty > effectiveMax;
+      const isValid   = !isTooLow && !isTooHigh;
+
+      // 1) Feedback visual
+      cantidadInput.classList.toggle('border-red-500', !isValid);
+      cantidadInput.classList.toggle('ring-red-500', !isValid);
+
+      // 2) Botones basados en el clamp del valor
+      updateButtons(Math.min(Math.max(qty, minVal), effectiveMax));
+
+      // 3) Total y hidden solo si es válido
+      if (isValid) {
+        totalPriceEl.textContent = `S/ ${(qty * pricePerKg).toFixed(2)}`;
+        if (cantidadForm) cantidadForm.value = qty;
+        if (addBtn) addBtn.disabled = false;
+      } else {
+        if (addBtn) addBtn.disabled = true;
+      }
+    }
+
+    // Forzar clamp al salir del campo (blur)
+    function handleBlur() {
+      let raw = Number(cantidadInput.value);
+      if (isNaN(raw)) raw = minVal;
+      let qty = Math.floor(raw);
+      const effectiveMax = getEffectiveMax();
+      qty = Math.min(Math.max(qty, minVal), effectiveMax);
+
       cantidadInput.value = qty;
-      updateButtons(qty);
-      totalPriceEl.textContent = `S/ ${(qty * pricePerKg).toFixed(2)}`;
+      handleInput(); // re-ejecuta toda la lógica
     }
 
-    updateTotal();
+    // Listeners
+    decrementBtn.addEventListener('click', () => {
+      cantidadInput.value = Number(cantidadInput.value) - 1;
+      handleInput();
+    });
+    incrementBtn.addEventListener('click', () => {
+      cantidadInput.value = Number(cantidadInput.value) + 1;
+      handleInput();
+    });
+    cantidadInput.addEventListener('input', handleInput);
+    cantidadInput.addEventListener('blur', handleBlur);
 
-    decrementBtn.addEventListener('click', () => { cantidadInput.value--; updateTotal(); });
-    incrementBtn.addEventListener('click', () => { cantidadInput.value++; updateTotal(); });
-    cantidadInput.addEventListener('input', updateTotal);
+    // Inicialización: deja el mínimo y dispara la validación
+    cantidadInput.value = minVal;
+    handleInput();
   });
 </script>
 @endpush
+
 
 @endsection
