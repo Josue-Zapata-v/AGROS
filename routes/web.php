@@ -13,6 +13,8 @@ use App\Http\Controllers\Publico\CatalogoPublicoController;
 use App\Http\Controllers\Comprador\CompradorController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\Comprador\PedidoController as PedidoCompradorController;
+use App\Http\Controllers\Transportista\TransportistaController;
+
 
 
 
@@ -55,10 +57,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 📬 Pedidos recibidos
     Route::get('/agricultor/pedidos', [PedidoController::class, 'index'])->name('agricultor.pedidos');
+    // ✅ Marcar pedido como listo para envío
+    Route::post('/agricultor/pedidos/{id}/marcar-listo', [PedidoController::class, 'marcarListoParaEnvio'])
+        ->name('agricultor.pedidos.marcarListo');
+
 
     // 🚚 Postulaciones de transportistas
     Route::get('/agricultor/postulaciones', [PostulacionTransportistaController::class, 'index'])->name('agricultor.postulaciones');
     Route::post('/agricultor/postulaciones/{id}/responder', [PostulacionTransportistaController::class, 'responder'])->name('agricultor.postulaciones.responder');
+    // Revertir una postulación rechazada (solo si aún no hay transporte asignado)
+    Route::post('/agricultor/postulaciones/{id}/revertir', [PostulacionTransportistaController::class, 'revertir'])
+        ->name('agricultor.postulaciones.revertir');
+
+    
 
     // 👤 Perfil del Agricultor (modo lectura + editar)
     Route::get('/agricultor/perfil', [PerfilController::class, 'edit'])->name('agricultor.perfil');
@@ -71,9 +82,28 @@ Route::get('/dashboard-comprador', [CompradorController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('comprador.dashboard');
 
-Route::get('/dashboard-transportista', function () {
-    return 'Bienvenido Transportista';
-})->middleware(['auth', 'verified'])->name('transportista.dashboard');
+
+Route::get('/dashboard-transportista', [TransportistaController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('transportista.dashboard');
+Route::get('/transportista/pedidos-disponibles', [TransportistaController::class, 'pedidosDisponibles'])
+    ->middleware(['auth', 'verified'])
+    ->name('transportista.pedidos.disponibles');
+Route::post('/transportista/postular/{pedido}', [TransportistaController::class, 'postular'])->name('transportista.postular');
+// 📄 Mis postulaciones
+Route::get('/transportista/mis-postulaciones', [TransportistaController::class, 'misPostulaciones'])
+    ->name('transportista.postulaciones');
+// 📦 Transportes asignados
+Route::get('/transportista/transportes', [TransportistaController::class, 'transportesAsignados'])
+    ->name('transportista.transportes');
+Route::post('/transportista/transportes/{id}/en-camino', [TransportistaController::class, 'marcarEnCamino'])
+    ->name('transportista.transportes.en_camino');
+Route::post('/transportista/transportes/{id}/entregado', [TransportistaController::class, 'marcarEntregado'])
+    ->name('transportista.transportes.entregado');
+
+
+
+
 
 // 👉 Ruta unificada de acceso (login/registro en una sola vista)
 Route::view('/acceso', 'auth.unificado')->name('auth.unificado');

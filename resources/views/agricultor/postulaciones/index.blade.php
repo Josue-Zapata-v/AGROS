@@ -39,15 +39,28 @@
                                         <input type="hidden" name="accion" value="aceptar">
                                         <button class="text-green-600 hover:underline mr-2">Aceptar</button>
                                     </form>
-
+                                    {{-- Botón Rechazar --}}
                                     <form method="POST" action="{{ route('agricultor.postulaciones.responder', $postulacion->id) }}" class="inline">
                                         @csrf
                                         <input type="hidden" name="accion" value="rechazar">
                                         <button class="text-red-600 hover:underline">Rechazar</button>
                                     </form>
-                                @else
-                                    <span class="text-sm text-gray-500">Ya gestionado</span>
+
+                                @elseif($postulacion->estado === 'rechazado')
+                                    @php
+                                        $transporteAsignado = \App\Models\Transporte::where('pedido_id', $postulacion->pedido_id)->exists();
+                                    @endphp
+
+                                    @if(!$transporteAsignado)
+                                        <form method="POST" action="{{ route('agricultor.postulaciones.revertir', $postulacion->id) }}" class="inline">
+                                            @csrf
+                                            <button class="text-blue-600 hover:underline">Revertir rechazo</button>
+                                        </form>
+                                    @else
+                                        <span class="text-sm text-gray-500">Ya gestionado</span>
+                                    @endif
                                 @endif
+
                             </td>
                         </tr>
                     @endforeach

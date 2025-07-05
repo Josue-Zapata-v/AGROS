@@ -28,7 +28,20 @@
                             </td>
                             <td class="px-4 py-2">{{ $pedido->total_kg }} kg</td>
                             <td class="px-4 py-2">{{ $pedido->direccion_entrega }}</td>
-                            <td class="px-4 py-2 capitalize">{{ str_replace('_', ' ', $pedido->estado) }}</td>
+                            <td class="px-4 py-2 capitalize">{{ str_replace('_', ' ', $pedido->estado) }}
+                                @if ($pedido->estado === 'pendiente')
+                                    <form action="{{ route('agricultor.pedidos.marcarListo', $pedido->id) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        <div class="flex flex-col space-y-1">
+                                            <input type="number" step="0.01" name="precio_transporte_kg" class="border rounded px-2 py-1 text-sm" placeholder="S/ por kg" required>
+                                            <button type="submit" class="bg-green-600 text-white text-xs px-3 py-1 rounded hover:bg-green-700">
+                                                📦 Marcar como listo para envío
+                                            </button>
+                                        </div>
+                                    </form>
+                            
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
