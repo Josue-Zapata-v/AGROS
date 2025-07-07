@@ -450,7 +450,7 @@ AGROS/
 ├── README.md
 ├── tailwind.config.js
 └── vite.config.js
-
+```
 
 El proyecto AGROS mantiene una estructura organizada basada en las convenciones de Laravel, con separaciones claras por roles y componentes.
 
