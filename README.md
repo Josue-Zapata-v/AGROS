@@ -73,6 +73,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 8. [🧪 Pruebas y usuarios de ejemplo](#pruebas-y-usuarios-de-ejemplo)
 9. [📈 Mejoras futuras o pendientes](#mejoras-futuras-o-pendientes)
 10. [👨‍💻 Autor y créditos](#autor-y-créditos)
+11. [📂 Anexos: Exploración del código fuente por módulos (en desarrollo)](#anexos-exploración-del-código-fuente-por-módulos-en-desarrollo)
 
 # 📌 Descripción del proyecto
 
@@ -593,68 +594,7 @@ Este proyecto fue desarrollado como parte del curso **Desarrollo de Aplicaciones
 
 > Este proyecto es de carácter académico y fue construido con fines de aprendizaje, simulando un entorno real de comercio digital para el sector agrícola peruano.
 
-
-
-
-
-
-
-
-AGROS
-# Estructura de Carpetas del Proyecto Agros
-
-```
-AGROS/
-│
-├── app/
-│   ├── Console/
-│   ├── Exceptions/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   └── Middleware/
-│   ├── Models/
-│   └── Providers/
-│
-├── bootstrap/
-│
-├── config/
-│
-├── database/
-│   ├── factories/
-│   ├── migrations/
-│   └── seeders/
-│
-├── public/
-│
-├── resources/
-│   ├── css/
-│   ├── js/
-│   └── views/
-│       ├── components/
-│       └── layouts/
-│
-├── routes/
-│
-├── storage/
-│   ├── app/
-│   ├── framework/
-│   └── logs/
-│
-├── tests/
-│   ├── Feature/
-│   └── Unit/
-│
-├── .env
-├── artisan
-├── composer.json
-├── composer.lock
-├── package.json
-├── phpunit.xml
-├── README.md
-├── tailwind.config.js
-└── vite.config.js
-```
----
+## 📂 Anexos: Exploración del código fuente por módulos (en desarrollo)
 
 ## 📂 Controlador: `ProductoController.php`
 
