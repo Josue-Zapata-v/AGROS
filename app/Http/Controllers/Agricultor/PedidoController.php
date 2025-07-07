@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Pedido;
 use App\Models\DetallePedido;
 use Illuminate\Http\Request;
+use App\Models\Pago;
 
 
 class PedidoController extends Controller
@@ -14,7 +15,7 @@ class PedidoController extends Controller
     {
         $agricultorId = Auth::id();
 
-        $pedidos = Pedido::with(['detalles.producto', 'comprador'])
+        $pedidos = Pedido::with(['detalles.producto', 'comprador', 'pago'])
             ->where('agricultor_id', $agricultorId)
             ->latest()
             ->get();

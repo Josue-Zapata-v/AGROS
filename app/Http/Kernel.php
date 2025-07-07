@@ -43,11 +43,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // 👇 Esto es lo que activa tu middleware personalizado
-        'profile.completed' => \App\Http\Middleware\CheckProfileCompletion::class,
+    
 
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
-        'comprador' => \App\Http\Middleware\RolComprador::class,
+       
+
 
 
     ];

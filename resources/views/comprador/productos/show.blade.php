@@ -62,12 +62,11 @@
             <p class="font-semibold flex items-center space-x-2">
               <span>{{ $producto->agricultor->name }}</span>
               <span class="text-yellow-400 flex items-center space-x-1">
-                <i class="fas fa-star"></i><span>4.8</span>
               </span>
             </p>
             <p class="text-xs flex items-center space-x-1">
               <i class="fas fa-map-marker-alt text-green-700"></i>
-              <span>{{ $producto->ubicacion ?? 'Sin ubicación' }}</span>
+              <span>{{ $producto->agricultor->departamento }}, {{ $producto->agricultor->provincia }}, {{ $producto->agricultor->distrito  ?? 'Sin ubicación' }}</span>
             </p>
           </div>
         </div>

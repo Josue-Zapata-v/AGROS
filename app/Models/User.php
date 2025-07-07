@@ -9,7 +9,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'phone', 'direccion', 'precio_transporte_kg'
+        'name',
+        'email',
+        'password',
+        'role',
+        'phone',
+        'precio_transporte_kg',
+        'departamento',
+        'provincia',
+        'distrito',
+        'direccion_detallada'
     ];
 
     public function productos() {

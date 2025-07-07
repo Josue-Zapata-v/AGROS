@@ -113,7 +113,12 @@
 
                     {{-- Ubicación y agricultor --}}
                     <div class="text-sm text-gray-600 space-y-1 mb-3">
-                        <p><i class="fas fa-map-marker-alt text-green-500 mr-1"></i>{{ $producto->ubicacion }}</p>
+                        <p>
+                            <i class="fas fa-map-marker-alt text-green-500 mr-1"></i>
+                            {{ $producto->agricultor->departamento }}, {{ $producto->agricultor->provincia }}, {{ $producto->agricultor->distrito }}
+
+                        </p>
+
                         <p><i class="fas fa-user text-blue-500 mr-1"></i>Por {{ $producto->agricultor->name }}</p>
                     </div>
 

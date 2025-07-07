@@ -13,8 +13,19 @@ class ProductoController extends Controller
 {
     public function index()
     {
-        $productos = Producto::where('agricultor_id', auth()->id())->get();
-        return view('agricultor.dashboard', compact('productos'));
+        $user = Auth::user();
+        // Verificamos si el perfil está incompleto (basado en dirección)
+        $perfilIncompleto = empty($user->departamento) ||
+                            empty($user->provincia) ||
+                            empty($user->distrito) ||
+                            empty($user->direccion_detallada);
+
+        // Traer productos del agricultor autenticado
+        $productos = Producto::where('agricultor_id', $user->id)->get();
+
+        
+        return view('agricultor.dashboard', compact('productos', 'perfilIncompleto'));
+
         
     }
 
@@ -85,7 +96,6 @@ class ProductoController extends Controller
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:1',
-            'ubicacion' => 'required|string|max:150',
             'caracteristicas' => 'nullable|string',
             'min_kg_envio' => 'required|integer|min:1',
             'max_kg_envio' => 'required|integer|gte:min_kg_envio',

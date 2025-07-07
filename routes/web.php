@@ -68,13 +68,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Revertir una postulación rechazada (solo si aún no hay transporte asignado)
     Route::post('/agricultor/postulaciones/{id}/revertir', [PostulacionTransportistaController::class, 'revertir'])
         ->name('agricultor.postulaciones.revertir');
-
-    
-
+        
     // 👤 Perfil del Agricultor (modo lectura + editar)
     Route::get('/agricultor/perfil', [PerfilController::class, 'edit'])->name('agricultor.perfil');
     Route::post('/agricultor/perfil', [PerfilController::class, 'update'])->name('agricultor.perfil.update');
+    
 });
+
 
 
 // Dashboards básicos para los otros roles

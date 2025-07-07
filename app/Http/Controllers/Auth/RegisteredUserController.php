@@ -35,7 +35,6 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:100', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'phone' => ['required', 'digits:9'], // Exactamente 9 dígitos
-            'direccion' => ['required', 'string', 'max:255'],
             'role' => ['required', 'in:agricultor,comprador,transportista'],
         ]);
 
@@ -44,13 +43,17 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'direccion' => $request->direccion,
             'role' => $request->role,
         ]);
 
-        event(new Registered($user));
+        // 🔒 Aseguramos que no haya sesión anterior activa
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
+        // 🔐 Iniciar sesión limpia
         Auth::login($user);
+        $request->session()->regenerate();
 
         switch ($user->role) {
             case 'agricultor':

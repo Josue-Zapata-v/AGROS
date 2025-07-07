@@ -19,8 +19,11 @@
         <p class="text-lg">{{ $usuario->phone ?? 'No registrado' }}</p>
     </div>
     <div class="mb-4">
-        <p class="text-gray-700 font-semibold">Dirección:</p>
-        <p class="text-lg">{{ $usuario->direccion ?? 'No registrada' }}</p>
+        <p class="text-gray-700 font-semibold">Dirección completa:</p>
+        <p class="text-lg">
+            {{ $usuario->departamento }}, {{ $usuario->provincia }}, {{ $usuario->distrito }}<br>
+            {{ $usuario->direccion_detallada }}
+        </p>
     </div>
 
     <div class="mt-6 text-right">
@@ -32,6 +35,7 @@
         </button>
     </div>
 </div>
+
 <!-- Modal de edición -->
 <div id="modal-editar-perfil" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
@@ -57,18 +61,39 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 font-medium mb-1">Dirección</label>
-                <input type="text" name="direccion" value="{{ old('direccion', $usuario->direccion) }}" class="w-full border-gray-300 rounded-md shadow-sm">
-                @error('direccion')
+                <label class="block text-gray-700 font-medium mb-1">Departamento</label>
+                <input type="text" name="departamento" value="{{ old('departamento', $usuario->departamento) }}" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                @error('departamento')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="flex justify-between mt-6">
-                <button type="button" onclick="document.getElementById('modal-editar-perfil').classList.add('hidden')" class="text-gray-700 hover:text-gray-900">
-                    Cancelar
-                </button>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1">Provincia</label>
+                <input type="text" name="provincia" value="{{ old('provincia', $usuario->provincia) }}" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                @error('provincia')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1">Distrito</label>
+                <input type="text" name="distrito" value="{{ old('distrito', $usuario->distrito) }}" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                @error('distrito')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1">Dirección detallada</label>
+                <input type="text" name="direccion_detallada" value="{{ old('direccion_detallada', $usuario->direccion_detallada) }}" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                @error('direccion_detallada')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mt-6 text-right">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">
                     Guardar cambios
                 </button>
             </div>
@@ -83,6 +108,4 @@
         </button>
     </div>
 </div>
-
-
 @endsection

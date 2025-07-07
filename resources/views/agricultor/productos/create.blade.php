@@ -39,17 +39,7 @@
             />
             @error('nombre')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
           </label>
-          <label class="text-xs text-[#495057] flex flex-col">
-            <span class="mb-1 font-semibold">Ubicación</span>
-            <input
-              type="text"
-              name="ubicacion"
-              value="{{ old('ubicacion') }}"
-              placeholder="Ej: Lima, Perú"
-              class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
-            />
-            @error('ubicacion')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-          </label>
+          
         </div>
 
         <label class="text-xs text-[#495057] flex flex-col">

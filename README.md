@@ -60,9 +60,546 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-
-
 ------------------
+# 📘 Índice de Contenido
+
+1. [📌 Descripción del proyecto](#descripción-del-proyecto)
+2. [🚀 Funcionalidades principales](#funcionalidades-principales)
+3. [🛠️ Tecnologías utilizadas](#tecnologías-utilizadas)
+4. [⚙️ Instalación y configuración local](#instalación-y-configuración-local)
+5. [👥 Gestión de usuarios y roles](#gestión-de-usuarios-y-roles)
+6. [📦 Estructura de carpetas](#estructura-de-carpetas)
+7. [🧾 Base de datos y tablas principales](#base-de-datos-y-tablas-principales)
+8. [🧪 Pruebas y usuarios de ejemplo](#pruebas-y-usuarios-de-ejemplo)
+9. [📈 Mejoras futuras o pendientes](#mejoras-futuras-o-pendientes)
+10. [👨‍💻 Autor y créditos](#autor-y-créditos)
+
+# 📌 Descripción del proyecto
+
+**AGROS** es una plataforma web desarrollada con Laravel y PHP cuyo objetivo principal es **digitalizar el comercio agrícola en el Perú**, conectando directamente a **agricultores**, **compradores** y **transportistas**, sin intermediarios. La plataforma busca promover la **eficiencia logística**, la **comercialización justa de productos agrícolas** y el desarrollo tecnológico en el sector rural.
+
+Este proyecto forma parte del curso **Desarrollo de Aplicaciones en Internet - Ciclo 2025-I** del **Instituto TECSUP**, y ha sido diseñado para simular un entorno real de comercio electrónico orientado al sector agroindustrial.
+
+La plataforma se estructura en torno a tres actores principales:
+
+- 👨‍🌾 **Agricultor**: Publica productos agrícolas, define precios por kilogramo y gestiona pedidos y postulaciones de transporte.
+- 🛒 **Comprador**: Navega los productos disponibles, añade al carrito, selecciona cantidades, define dirección de entrega y realiza pedidos.
+- 🚚 **Transportista**: Visualiza pedidos disponibles, se postula para transportarlos, y espera aprobación del agricultor.
+
+AGROS busca fomentar una experiencia digital completa para los pequeños y medianos productores agrícolas peruanos, facilitando la venta directa y mejorando los procesos de distribución de forma transparente y organizada.
+
+# 🚀 Funcionalidades principales
+
+La plataforma AGROS ofrece funcionalidades específicas para cada tipo de usuario registrado, permitiendo una experiencia completa de comercio agrícola digital.
+
+## 👨‍🌾 Agricultor
+
+- Publicación de productos con precio por kilogramo.
+- Visualización y gestión de sus productos publicados.
+- Edición y eliminación de productos.
+- Visualización de pedidos recibidos por parte de los compradores.
+- Gestión de postulaciones de transportistas para el envío de productos (aceptar o rechazar).
+- Visualización y edición de su perfil personal y datos de contacto.
+
+## 🛒 Comprador
+
+- Navegación por el catálogo de productos disponibles.
+- Añadir productos al carrito de compras.
+- Modificar cantidad de productos según el mínimo, máximo y stock disponible.
+- Selección de dirección de entrega en una interfaz por pasos.
+- Confirmación de pedido final con resumen de la compra.
+
+## 🚚 Transportista
+
+- Visualización de pedidos disponibles para transporte.
+- Postulación para transportar un pedido específico.
+- Revisión del estado de sus postulaciones (aceptadas o rechazadas).
+
+# 🛠️ Tecnologías utilizadas
+
+AGROS ha sido desarrollado con un stack moderno orientado al desarrollo web backend y frontend utilizando herramientas del ecosistema de Laravel.
+
+### 🔙 Backend
+
+- **PHP 8.2** – Lenguaje principal del servidor.
+- **Laravel 12.15** – Framework PHP utilizado para construir toda la lógica del backend.
+- **MySQL** – Sistema de gestión de base de datos relacional.
+- **Laravel Breeze** – Sistema ligero de autenticación de usuarios con redirección por roles.
+- **Blade** – Motor de plantillas utilizado para renderizar las vistas HTML.
+
+### 🎨 Frontend
+
+- **Tailwind CSS** – Framework de estilos utility-first para construir una interfaz moderna y adaptable.
+- **Vite** – Herramienta de desarrollo utilizada para compilar assets frontend (`npm run dev`).
+
+### 📦 Dependencias adicionales
+
+- **Composer** – Gestor de dependencias PHP.
+- **NPM** – Gestor de paquetes para compilar los assets con Tailwind y Vite.
+
+> **Nota:** La estructura de base de datos se creó parcialmente con migraciones (7 tablas) y parcialmente de forma manual usando phpMyAdmin en MySQL (6 tablas). A futuro se recomienda migrar toda la estructura a migraciones para mejor control de versiones y despliegue.
+
+# ⚙️ Instalación y configuración local
+
+Para ejecutar el proyecto AGROS en un entorno local de desarrollo, se deben seguir los siguientes pasos:
+
+### 🧬 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/Josue-Zapata-v/AGROS.git
+cd agros
+```
+
+### 📦 2. Instalar dependencias
+
+```bash
+composer install
+npm install
+```
+
+### ⚙️ 3. Configurar el entorno
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+### 🗃️ 4. Configurar la base de datos
+
+* Crear una base de datos vacía en MySQL con el nombre `agros_db`.
+* Importar el archivo `/database/agros_db.sql` desde phpMyAdmin o con el siguiente comando:
+
+```bash
+mysql -u root -p agros_db < database/agros_db.sql
+```
+
+* Actualizar el archivo `.env` con las siguientes credenciales:
+
+```
+DB_DATABASE=agros_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 🎨 5. Compilar los assets con Vite
+
+```bash
+npm run dev
+```
+
+### 🚀 6. Iniciar el servidor de desarrollo
+
+```bash
+php artisan serve
+```
+
+La aplicación estará disponible en:
+
+```
+http://localhost:8000
+```
+
+# 👥 Gestión de usuarios y roles
+
+AGROS gestiona a sus usuarios a través de un sistema de autenticación con redirección según el rol asignado. Existen tres tipos de usuarios principales, cada uno con funcionalidades específicas:
+
+### 👨‍🌾 Agricultor
+
+* Publica productos con precio por kilogramo.
+* Administra el stock, el mínimo y máximo por envío.
+* Visualiza pedidos recibidos.
+* Revisa postulaciones de transportistas y aprueba o rechaza envíos.
+* Edita su perfil y datos de contacto.
+
+### 🛒 Comprador
+
+* Se registra y navega el catálogo de productos disponibles.
+* Añade productos al carrito y define la cantidad deseada.
+* Ingresa la dirección de entrega y confirma el pedido en una interfaz por pasos.
+* Consulta sus pedidos realizados.
+
+### 🚚 Transportista
+
+* Visualiza pedidos disponibles para postulación.
+* Se postula para transportar pedidos específicos.
+* Revisa el estado de sus postulaciones (aceptadas o rechazadas).
+
+### 🔐 Control de acceso
+
+* El sistema de autenticación está implementado con Laravel Breeze.
+* Tras iniciar sesión, los usuarios son redirigidos automáticamente a su respectivo dashboard según su rol.
+* Se realiza validación para asegurar que cada usuario acceda únicamente a las rutas permitidas para su rol.
+
+---
+
+# 📦 Estructura de carpetas
+
+AGROS/
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Agricultor/
+│   │   │   ├── Auth/
+│   │   │   ├── Comprador/
+│   │   │   ├── Publico/
+│   │   │   ├── Transportista/
+│   │   │   ├── CarritoController.php
+│   │   │   ├── PagoController.php
+│   │   │   ├── ProfileController.php
+│   │   │   └── Controller.php
+│   │   ├── Kernel.php
+│   │   ├── Middleware/
+│   │   └── Requests/
+│   ├── Models/
+│   │   ├── Categoria.php
+│   │   ├── DetallePedido.php
+│   │   ├── Pago.php
+│   │   ├── Pedido.php
+│   │   ├── PostulacionTransportista.php
+│   │   ├── Producto.php
+│   │   ├── Transporte.php
+│   │   └── User.php
+│   ├── Providers/
+│   │   └── AppServiceProvider.php
+│   └── View/
+│       └── Components/
+│           ├── AppLayout.php
+│           ├── FooterPublico.php
+│           └── GuestLayout.php
+│
+├── bootstrap/
+│   ├── app.php
+│   ├── providers.php
+│   └── cache/
+│       ├── .gitignore
+│       ├── packages.php
+│       └── services.php
+│
+├── config/
+│   ├── app.php
+│   ├── auth.php
+│   ├── cache.php
+│   ├── database.php
+│   ├── filesystems.php
+│   ├── logging.php
+│   ├── mail.php
+│   ├── queue.php
+│   ├── services.php
+│   └── session.php
+│
+├── database/
+│   ├── factories/
+│   │   └── UserFactory.php
+│   ├── migrations/
+│   │   ├── 2025_06_11_233555_create_sessions_table.php
+│   │   ├── 2025_06_12_001708_create_cache_table.php
+│   │   ├── 2025_06_13_040805_add_timestamps_to_postulaciones_transportistas_table.php
+│   │   ├── 2025_06_23_003338_create_categorias_table.php
+│   │   ├── 2025_06_23_003424_create_categoria_producto_table.php
+│   │   ├── 2025_07_04_232808_create_pagos_table.php
+│   │   └── 2025_07_05_232623_replace_direccion_field_in_users.php
+│   ├── seeders/
+│   │   └── DatabaseSeeder.php
+│   ├── .gitignore
+│   └── database.sqlite
+│
+├── public/
+│   ├── .htaccess
+│   ├── favicon.ico
+│   ├── index.php
+│   ├── robots.txt
+│   ├── storage
+│   └── build/
+│       ├── assets/
+│       │   ├── app-Bf4POITK.js
+│       │   └── app-CVatbMnu.css
+│       └── manifest.json
+│
+├── resources/
+│   ├── css/
+│   │   └── app.css
+│   ├── js/
+│   │   ├── app.js
+│   │   └── bootstrap.js
+│   └── views/
+│       ├── agricultor/
+│       │   ├── dashboard.blade.php
+│       │   ├── pedidos/
+│       │   ├── perfil.blade.php
+│       │   ├── postulaciones/
+│       │   └── productos/
+│       │       ├── create.blade.php
+│       │       ├── edit.blade.php
+│       │       └── index.blade.php
+│       ├── auth/
+│       │   ├── confirm-password.blade.php
+│       │   ├── forgot-password.blade.php
+│       │   ├── login.blade.php
+│       │   ├── register.blade.php
+│       │   ├── reset-password.blade.php
+│       │   ├── unificado.blade.php
+│       │   └── verify-email.blade.php
+│       ├── components/
+│       │   ├── app-layout.blade.php
+│       │   ├── application-logo.blade.php
+│       │   ├── auth-session-status.blade.php
+│       │   ├── danger-button.blade.php
+│       │   ├── dropdown-link.blade.php
+│       │   ├── dropdown.blade.php
+│       │   ├── footer-publico.blade.php
+│       │   ├── header-publico.blade.php
+│       │   ├── icono-carrito.blade.php
+│       │   ├── input-error.blade.php
+│       │   ├── input-label.blade.php
+│       │   ├── modal.blade.php
+│       │   ├── nav-link.blade.php
+│       │   ├── primary-button.blade.php
+│       │   ├── responsive-nav-link.blade.php
+│       │   ├── secondary-button.blade.php
+│       │   └── text-input.blade.php
+│       ├── comprador/
+│       │   ├── dashboard.blade.php
+│       │   ├── mis_pedidos.blade.php
+│       │   ├── pedidos/
+│       │   └── productos/
+│       │       └── show.blade.php
+│       ├── dashboard.blade.php
+│       ├── layouts/
+│       │   ├── agricultor.blade.php
+│       │   ├── app.blade.php
+│       │   ├── guest.blade.php
+│       │   ├── navigation.blade.php
+│       │   ├── publico.blade.php
+│       │   └── transportista.blade.php
+│       ├── profile/
+│       │   ├── edit.blade.php
+│       │   └── partials/
+│       │       ├── delete-user-form.blade.php
+│       │       ├── update-password-form.blade.php
+│       │       └── update-profile-information-form.blade.php
+│       ├── publico/
+│       │   ├── carrito/
+│       │   │   ├── confirmacion.blade.php
+│       │   │   ├── index.blade.php
+│       │   │   ├── _paso1-carrito.blade.php
+│       │   │   ├── _paso2-entrega.blade.php
+│       │   │   ├── _paso3-pago.blade.php
+│       │   │   ├── _pasos-header.blade.php
+│       │   │   └── _scripts.blade.php
+│       │   └── pedidos/
+│       ├── transportista/
+│       │   ├── dashboard.blade.php
+│       │   ├── pedidos/
+│       │   ├── postulaciones/
+│       │   └── transportes/
+│       ├── welcome.blade.php
+│
+├── routes/
+│   ├── auth.php
+│   ├── console.php
+│   └── web.php
+│
+├── storage/
+│   ├── app/
+│   │   ├── .gitignore
+│   │   ├── private/
+│   │   └── public/
+│   ├── framework/
+│   │   ├── .gitignore
+│   │   ├── cache/
+│   │   ├── sessions/
+│   │   ├── testing/
+│   │   └── views/
+│   └── logs/
+│       ├── .gitignore
+│       └── laravel.log
+│
+├── tests/
+│   ├── Feature/
+│   │   ├── Auth/
+│   │   │   ├── AuthenticationTest.php
+│   │   │   ├── EmailVerificationTest.php
+│   │   │   ├── PasswordConfirmationTest.php
+│   │   │   ├── PasswordResetTest.php
+│   │   │   ├── PasswordUpdateTest.php
+│   │   │   └── RegistrationTest.php
+│   │   ├── ExampleTest.php
+│   │   └── ProfileTest.php
+│   ├── TestCase.php
+│   └── Unit/
+│       └── ExampleTest.php
+│
+├── vendor/
+│
+├── .editorconfig
+├── .env
+├── .env.example
+├── .gitattributes
+├── .gitignore
+├── artisan
+├── composer.json
+├── composer.lock
+├── package-lock.json
+├── package.json
+├── phpunit.xml
+├── postcss.config.js
+├── README.md
+├── tailwind.config.js
+└── vite.config.js
+
+El proyecto AGROS mantiene una estructura organizada basada en las convenciones de Laravel, con separaciones claras por roles y componentes.
+
+### 🔁 Carpetas destacadas
+
+* **`app/Http/Controllers/`**:
+  Contiene los controladores de cada actor del sistema, organizados en subcarpetas:
+
+  * `Agricultor/`, `Comprador/`, `Transportista/`, `Publico/`, `Auth/`
+  * Controladores comunes como `CarritoController`, `PagoController`, `ProfileController`.
+
+* **`app/Models/`**:
+  Modelos de las tablas principales: `Producto`, `Pedido`, `DetallePedido`, `PostulacionTransportista`, `User`, entre otros.
+
+* **`resources/views/`**:
+  Vistas Blade organizadas por rol y función:
+
+  * `agricultor/`, `comprador/`, `transportista/`, `publico/`, `auth/`, `components/`, `layouts/`
+
+* **`routes/`**:
+  Rutas de la aplicación definidas en:
+
+  * `web.php`, `auth.php`
+
+* **`database/migrations/`**:
+  Migraciones utilizadas en parte del proyecto (7 tablas).
+  También se incluye el archivo `agros_db.sql` con toda la estructura y datos base.
+
+* **`public/`**:
+  Archivos públicos accesibles desde el navegador (index, favicon, assets compilados con Vite).
+
+* **`resources/js/` y `resources/css/`**:
+  Archivos JavaScript y CSS base utilizados por Vite y Tailwind CSS.
+
+* **`storage/` y `bootstrap/cache/`**:
+  Archivos temporales, logs, vistas compiladas y cachés internos de Laravel.
+
+---
+
+# 🧾 Base de datos y tablas principales
+
+La base de datos de AGROS está diseñada para gestionar eficientemente la relación entre los tres tipos de usuarios (agricultor, comprador y transportista), los productos agrícolas y la cadena de pedidos y envíos.
+
+### 📌 Detalles generales
+
+* Motor utilizado: **MySQL**
+* Nombre de la base de datos: `agros_db`
+* El archivo `agros_db.sql` contiene toda la estructura y datos mínimos para iniciar el sistema.
+* Algunas tablas se generaron mediante **migraciones de Laravel**, y otras se crearon directamente desde **phpMyAdmin**.
+
+### 🧱 Tablas principales
+
+| Tabla                          | Descripción                                                              |
+| ------------------------------ | ------------------------------------------------------------------------ |
+| `users`                        | Almacena los datos de los usuarios registrados, incluyendo su rol.       |
+| `productos`                    | Registra los productos agrícolas publicados por los agricultores.        |
+| `pedidos`                      | Guarda la información general de cada pedido realizado por compradores.  |
+| `detalle_pedido`               | Contiene los productos y cantidades específicas dentro de un pedido.     |
+| `postulaciones_transportistas` | Postulaciones de los transportistas para transportar pedidos.            |
+| `transportes`                  | Registro del estado del transporte aceptado y completado.                |
+| `pagos`                        | Información relacionada a la simulación del proceso de pago.             |
+| `categorias`                   | Categorías generales de productos agrícolas.                             |
+| `categoria_producto`           | Tabla pivote para relación muchos a muchos entre productos y categorías. |
+| `migrations`                   | Control de migraciones realizadas con Laravel.                           |
+| `password_reset_tokens`        | Tokens para recuperación de contraseñas.                                 |
+| `sessions`                     | Sesiones activas de usuarios.                                            |
+| `cache`, `cache_locks`         | Tablas del sistema de cache.                                             |
+
+> **Nota:** Se recomienda estandarizar a futuro toda la estructura mediante migraciones para asegurar portabilidad, control de versiones y despliegues más seguros.
+
+---
+
+# 🧪 Pruebas y usuarios de ejemplo
+
+### 👥 Creación de usuarios de prueba
+
+Durante el desarrollo, se pueden crear usuarios de prueba desde la propia interfaz del sistema utilizando el formulario de **registro**. Al momento de registrarse, el usuario debe seleccionar uno de los tres roles disponibles:
+
+* `Agricultor`
+* `Comprador`
+* `Transportista`
+
+Una vez registrado, el sistema redirige automáticamente al dashboard correspondiente según el rol elegido.
+Para simular mejor el flujo completo de la plataforma, se recomienda crear al menos un usuario por cada rol.
+
+> **Nota:** Si un usuario no completa su perfil (dirección o teléfono), será redirigido automáticamente para actualizar esa información antes de continuar usando la plataforma.
+
+### ✅ Estado de las pruebas
+
+Actualmente, las pruebas han sido realizadas de forma **manual** validando:
+
+* El flujo completo de autenticación y redirección por roles.
+* Publicación y visualización de productos por parte del agricultor.
+* Flujo de compra: agregar productos al carrito, entrega y confirmación del pedido.
+* Postulación de transportistas y su gestión por parte del agricultor.
+
+> El directorio `tests/` incluye algunos archivos generados automáticamente por Laravel Breeze. A futuro se pueden desarrollar pruebas unitarias y de integración más completas.
+
+---
+
+# 📈 Mejoras futuras o pendientes
+
+Durante el desarrollo del proyecto AGROS, se identificaron diversas funcionalidades y mejoras que podrían implementarse en versiones futuras para enriquecer la experiencia de usuario y optimizar el sistema:
+
+### 🔄 Funcionalidades por implementar
+
+* **Historial de estados de pedidos**: Registro de cambios de estado para mayor trazabilidad.
+* **Facturación y comprobantes de entrega**: Generación de archivos PDF con los detalles de la transacción.
+* **Notificaciones internas**: Sistema para informar a los usuarios sobre postulaciones, aceptaciones o rechazos.
+* **Panel administrativo**: Dashboard centralizado para monitorear usuarios, productos, pedidos y estadísticas del sistema.
+* **Gestión avanzada de stock**: Alertas automáticas por bajo inventario y sugerencias de reabastecimiento.
+* **Filtros y búsqueda en el catálogo**: Mejorar la navegación por productos con filtros por categoría, precio, etc.
+
+### 🛠️ Mejoras técnicas
+
+* Estandarizar toda la base de datos mediante **migraciones Laravel** (algunas tablas fueron creadas en phpMyAdmin).
+* Implementar **pruebas unitarias y de integración** automatizadas.
+* Optimización de vistas y componentes Blade para mayor reutilización.
+* Modularizar lógica en controladores y servicios.
+
+### 🌐 Escalabilidad futura
+
+* Adaptar la plataforma para su uso en diferentes regiones del Perú con filtros geográficos.
+* Posible soporte multiidioma (español, quechua).
+* Preparación para despliegue en entornos cloud (como Laravel Forge o servicios VPS).
+
+---
+# 👨‍💻 Autor y créditos
+
+Este proyecto fue desarrollado como parte del curso **Desarrollo de Aplicaciones en Internet - Ciclo 2025-I** del **Instituto TECSUP**.
+
+### 👨‍🎓 Autor
+
+* **Josue Isai Zapata Villegas**
+  Estudiante de la carrera Diseño y Desarrollo de Software
+  Instituto TECSUP – Perú
+  [GitHub](https://github.com/Josue-Zapata-v) 
+
+### 🤝 Agradecimientos
+
+* A el docente Nilton Cesar Mercado Chavez del curso por la guía durante el desarrollo
+* A la comunidad de Laravel por su amplia documentación y soporte.
+* A los compañeros de clase que participaron en revisiones, sugerencias o pruebas del sistema.
+
+> Este proyecto es de carácter académico y fue construido con fines de aprendizaje, simulando un entorno real de comercio digital para el sector agrícola peruano.
+
+
+
+
+
+
+
+
 AGROS
 # Estructura de Carpetas del Proyecto Agros
 

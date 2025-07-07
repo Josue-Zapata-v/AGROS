@@ -87,12 +87,7 @@
                 <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
             @enderror
             {{-- Dirección --}}
-            <label for="direccion" class="block text-sm font-semibold mb-1">Dirección</label>
-            <input id="direccion" name="direccion" type="text" value="{{ old('direccion') }}" required
-                class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#1B6B3A]" />
-            @error('direccion')
-                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
-            @enderror
+            
 
             <label for="password_register" class="block text-sm font-semibold mb-1">Contraseña</label>
             <input id="password_register" name="password" type="password" required

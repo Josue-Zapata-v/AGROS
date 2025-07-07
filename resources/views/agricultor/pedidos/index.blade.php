@@ -13,6 +13,8 @@
                         <th class="px-4 py-2">Producto(s)</th>
                         <th class="px-4 py-2">Cantidad Total (kg)</th>
                         <th class="px-4 py-2">Dirección de Entrega</th>
+                        <th class="px-4 py-2">Método de Pago</th> <!-- NUEVO -->
+
                         <th class="px-4 py-2">Estado</th>
                     </tr>
                 </thead>
@@ -28,6 +30,20 @@
                             </td>
                             <td class="px-4 py-2">{{ $pedido->total_kg }} kg</td>
                             <td class="px-4 py-2">{{ $pedido->direccion_entrega }}</td>
+                            <td class="px-4 py-2">
+                                @if ($pedido->pago)
+                                    @if ($pedido->pago->metodo_pago === 'efectivo')
+                                        <span class="text-red-600 font-semibold">Contraentrega</span>
+                                    @else
+                                        <span class="text-green-600 font-semibold">
+                                            Pagado ({{ ucfirst($pedido->pago->metodo_pago) }})
+                                        </span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-500 italic">N/D</span>
+                                @endif
+                            </td>
+
                             <td class="px-4 py-2 capitalize">{{ str_replace('_', ' ', $pedido->estado) }}
                                 @if ($pedido->estado === 'pendiente')
                                     <form action="{{ route('agricultor.pedidos.marcarListo', $pedido->id) }}" method="POST" class="mt-2">

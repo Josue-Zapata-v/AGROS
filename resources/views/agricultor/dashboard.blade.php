@@ -1,11 +1,17 @@
 @extends('layouts.agricultor')
 
 @section('content')
+<div class="bg-white p-4 rounded-md border border-[#a6d6a1] mb-6 shadow-sm">
+    <h2 class="text-xl font-bold text-[#1b462b]">👋 ¡Bienvenido de nuevo, {{ Auth::user()->name }}!</h2>
+    <p class="text-gray-600 text-sm mt-1">Esperamos que tengas un excelente día gestionando tus productos en AGROS 🌱.</p>
+</div>
+
     @if (session('success'))
         <div class="mb-4 p-4 bg-green-100 border border-green-300 rounded text-green-800 font-medium">
             {{ session('success') }}
         </div>
     @endif
+    
 
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-extrabold text-[#1b462b]">🌿 Mis Productos</h1>
@@ -63,4 +69,9 @@
             @endforeach
         </div>
     @endif
+    
+
+
+    
+
 @endsection

@@ -30,4 +30,9 @@ class Pedido extends Model
     public function transporte() {
         return $this->hasOne(Transporte::class, 'pedido_id');
     }
+
+    public function pago()
+    {
+        return $this->hasOne(Pago::class, 'pedido_id');
+    }
 }

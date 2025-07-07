@@ -8,7 +8,7 @@ use App\Models\Producto;    // ← Importa Producto
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pedido;
 use App\Models\DetallePedido; // Asegúrate de importar el modelo
-
+use App\Models\Pago;
 class CarritoController extends Controller
 {
     public function index()
@@ -126,6 +126,8 @@ class CarritoController extends Controller
             'distrito'         => 'required|string|max:100',
             'provincia'        => 'required|string|max:100',
             'referencias'      => 'nullable|string|max:255',
+            'metodo_pago' => 'required|in:tarjeta,transferencia,efectivo',
+
         ]);
 
         // Concatenamos en un solo string para la tabla pedidos
@@ -153,6 +155,13 @@ class CarritoController extends Controller
             'total_precio'       => $totalPrecio,
             'direccion_entrega'  => session('entrega.direccion'),
             'telefono_entrega'   => session('entrega.telefono'), // ← esta es la clave
+        ]);
+        
+        Pago::create([
+            'pedido_id' => $pedido->id,
+            'metodo_pago' => $request->metodo_pago,
+            'monto' => $totalPrecio,
+            'fecha_pago' => now(),
         ]);
         
         // Validar stock de cada producto ANTES de crear los detalles del pedido
@@ -183,6 +192,7 @@ class CarritoController extends Controller
         // Vaciar el carrito y su contador
         session()->forget('carrito');
         session()->forget('contador_carrito'); // ← si usas un contador separado
+        session(['entrega.metodo_pago' => $request->metodo_pago]);
 
         // Guardamos el ID del pedido en la sesión para mostrarlo en el paso de confirmación
         session(['ultimo_pedido_id' => $pedido->id]);
@@ -191,7 +201,7 @@ class CarritoController extends Controller
 
     public function confirmarPedido()
     {
-        $pedido = Pedido::with('detalles.producto') // 👈 Cargar detalles y productos
+        $pedido = Pedido::with('detalles.producto', 'pago') // 👈 Cargar detalles y productos
             ->where('comprador_id', auth()->id())
             ->latest()
             ->first();

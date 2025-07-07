@@ -9,8 +9,8 @@ class Producto extends Model
     protected $table = 'productos';
 
     protected $fillable = [
-        'nombre', 'descripcion', 'precio', 'stock', 'imagen', 'caracteristicas',
-        'ubicacion', 'agricultor_id', 'min_kg_envio', 'max_kg_envio'
+        'nombre', 'descripcion', 'precio', 'stock', 'imagen', 'caracteristicas', 
+        'agricultor_id', 'min_kg_envio', 'max_kg_envio'
     ];
 
     public function agricultor() {
