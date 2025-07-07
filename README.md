@@ -235,6 +235,8 @@ AGROS gestiona a sus usuarios a través de un sistema de autenticación con redi
 
 # 📦 Estructura de carpetas
 
+
+```plaintext
 AGROS/
 │
 ├── app/
@@ -448,6 +450,7 @@ AGROS/
 ├── README.md
 ├── tailwind.config.js
 └── vite.config.js
+
 
 El proyecto AGROS mantiene una estructura organizada basada en las convenciones de Laravel, con separaciones claras por roles y componentes.
 
