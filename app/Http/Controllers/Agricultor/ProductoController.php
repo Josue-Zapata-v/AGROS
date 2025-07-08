@@ -93,12 +93,12 @@ class ProductoController extends Controller
     {
         return $request->validate([
             'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:1',
-            'caracteristicas' => 'nullable|string',
-            'min_kg_envio' => 'required|integer|min:1',
-            'max_kg_envio' => 'required|integer|gte:min_kg_envio',
+            'descripcion' => 'required|string', 
+            'precio' => 'required|numeric|min:0.10',
+            'stock' => 'required|integer|min:50|max:2000',
+            'caracteristicas' => 'required|string',
+            'min_kg_envio' => 'required|integer|min:50',
+            'max_kg_envio' => 'required|integer|gte:min_kg_envio|max:1000',
             'imagen' => 'nullable|image|max:2048'
         ]);
     }

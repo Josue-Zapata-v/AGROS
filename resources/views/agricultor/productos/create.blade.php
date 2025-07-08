@@ -33,6 +33,7 @@
             <input
               type="text"
               name="nombre"
+              required
               value="{{ old('nombre') }}"
               placeholder="Ej: Tomates orgánicos"
               class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
@@ -47,6 +48,7 @@
           <textarea
             name="descripcion"
             rows="3"
+            required
             placeholder="Describe tu producto, métodos de cultivo, beneficios..."
             class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] resize-y focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
           >{{ old('descripcion') }}</textarea>
@@ -69,9 +71,10 @@
             <input
               type="number"
               step="0.01"
-              min="0"
+              min="0.10"
+              required
               name="precio"
-              value="{{ old('precio', '0.00') }}"
+              value="{{ old('precio', '1.00') }}"
               class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
             />
             @error('precio')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -82,9 +85,11 @@
             </span>
             <input
               type="number"
-              min="0"
+              min="50"
+              max="2000"
               name="stock"
-              value="{{ old('stock', '0') }}"
+              required
+              value="{{ old('stock', '50') }}"
               class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
             />
             @error('stock')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -104,9 +109,10 @@
             <span class="mb-1 font-semibold">Cantidad mínima por pedido (kg)</span>
             <input
               type="number"
-              min="1"
+              min="50"
               name="min_kg_envio"
-              value="{{ old('min_kg_envio', '1') }}"
+              required
+              value="{{ old('min_kg_envio', '100') }}"
               class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
             />
             @error('min_kg_envio')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -115,9 +121,11 @@
             <span class="mb-1 font-semibold">Cantidad máxima por pedido (kg)</span>
             <input
               type="number"
-              min="1"
+              min="50"
+              max="1000"
               name="max_kg_envio"
-              value="{{ old('max_kg_envio', '100') }}"
+              required
+              value="{{ old('max_kg_envio', '300') }}"
               class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
             />
             @error('max_kg_envio')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -137,6 +145,7 @@
           <textarea
             name="caracteristicas"
             rows="3"
+            required
             placeholder="Ej: Orgánico, sin pesticidas, cosecha reciente..."
             class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] resize-y focus:outline-none focus:ring-1 focus:ring-[#2f9e44]"
           >{{ old('caracteristicas') }}</textarea>
@@ -148,6 +157,7 @@
             <select
                 id="select-categorias"
                 name="categorias[]"
+                required
                 multiple
                 placeholder="Selecciona categorías..."
             >
@@ -198,6 +208,7 @@
                 type="file" 
                 name="imagen" 
                 accept=".png,.jpg,.jpeg" 
+                required
                 class="hidden"
                 onchange="mostrarNombreArchivo()" 
             />

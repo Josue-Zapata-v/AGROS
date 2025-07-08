@@ -41,7 +41,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <label class="text-xs text-[#495057] flex flex-col">
             <span class="mb-1 font-semibold">Nombre del Producto</span>
-            <input type="text" name="nombre" value="{{ old('nombre', $producto->nombre) }}" placeholder="Ej: Tomates orgánicos"
+            <input type="text" name="nombre" required value="{{ old('nombre', $producto->nombre) }}" placeholder="Ej: Tomates orgánicos"
                    class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]" />
             @error('nombre')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
           </label>
@@ -50,7 +50,7 @@
 
         <label class="text-xs text-[#495057] flex flex-col">
           <span class="mb-1 font-semibold">Descripción</span>
-          <textarea name="descripcion" rows="3" placeholder="Describe tu producto, métodos de cultivo, beneficios..."
+          <textarea name="descripcion" rows="3" placeholder="Describe tu producto, métodos de cultivo, beneficios..." required
                     class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] resize-y focus:outline-none focus:ring-1 focus:ring-[#2f9e44]">{{ old('descripcion', $producto->descripcion) }}</textarea>
           @error('descripcion')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </label>
@@ -68,7 +68,7 @@
             <span class="mb-1 font-semibold flex items-center gap-1">
               <i class="fas fa-dollar-sign"></i> Precio por kg (S/)
             </span>
-            <input type="number" step="0.01" min="0" name="precio" value="{{ old('precio', $producto->precio) }}"
+            <input type="number" step="0.01" min="0" name="precio" required value="{{ old('precio', $producto->precio) }}"
                    class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]" />
             @error('precio')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
           </label>
@@ -76,7 +76,7 @@
             <span class="mb-1 font-semibold flex items-center gap-1">
               <i class="fas fa-boxes"></i> Stock disponible (kg)
             </span>
-            <input type="number" min="0" name="stock" value="{{ old('stock', $producto->stock) }}"
+            <input type="number" min="0" name="stock" required value="{{ old('stock', $producto->stock) }}"
                    class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]" />
             @error('stock')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
           </label>
@@ -93,13 +93,13 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label class="text-xs text-[#495057] flex flex-col">
             <span class="mb-1 font-semibold">Cantidad mínima por pedido (kg)</span>
-            <input type="number" min="1" name="min_kg_envio" value="{{ old('min_kg_envio', $producto->min_kg_envio) }}"
+            <input type="number" min="1" name="min_kg_envio" required value="{{ old('min_kg_envio', $producto->min_kg_envio) }}"
                    class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]" />
             @error('min_kg_envio')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
           </label>
           <label class="text-xs text-[#495057] flex flex-col">
             <span class="mb-1 font-semibold">Cantidad máxima por pedido (kg)</span>
-            <input type="number" min="1" name="max_kg_envio" value="{{ old('max_kg_envio', $producto->max_kg_envio) }}"
+            <input type="number" min="1" name="max_kg_envio" required value="{{ old('max_kg_envio', $producto->max_kg_envio) }}"
                    class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#2f9e44]" />
             @error('max_kg_envio')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
           </label>
@@ -115,7 +115,7 @@
 
         <label class="text-xs text-[#495057] flex flex-col mb-4">
           <span class="mb-1 font-semibold">Características Especiales</span>
-          <textarea name="caracteristicas" rows="3" placeholder="Ej: Orgánico, sin pesticidas, cosecha reciente..."
+          <textarea name="caracteristicas" rows="3" placeholder="Ej: Orgánico, sin pesticidas, cosecha reciente..." required
                     class="border border-[#ced4da] rounded px-2 py-1 text-xs text-[#495057] resize-y focus:outline-none focus:ring-1 focus:ring-[#2f9e44]">{{ old('caracteristicas', $producto->caracteristicas) }}</textarea>
           @error('caracteristicas')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </label>
@@ -125,6 +125,7 @@
             <select
                 id="select-categorias"
                 name="categorias[]"
+                required
                 multiple
                 placeholder="Selecciona categorías..."
             >
