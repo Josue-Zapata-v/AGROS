@@ -27,7 +27,7 @@ class PostulacionTransportistaController extends Controller
         return view('agricultor.postulaciones.index', compact('postulaciones'));
     }
 
-   public function responder(Request $request, $id)
+    public function responder(Request $request, $id)
     {
         $request->validate([
             'accion' => 'required|in:aceptar,rechazar',
@@ -46,9 +46,7 @@ class PostulacionTransportistaController extends Controller
         if ($request->accion === 'aceptar') {
             $pedido = $postulacion->pedido;
 
-            // Cambiar estado del pedido
-            $pedido->estado = 'en_transporte';
-            $pedido->save();
+          
 
             // Crear registro en la tabla transportes
             Transporte::create([

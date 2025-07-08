@@ -13,6 +13,19 @@ class ProductoController extends Controller
 {
     public function index()
     {
+
+        if (!Auth::check() || Auth::user()->role !== 'agricultor') {
+            $rol = Auth::user()->role ?? 'invitado';
+
+            if ($rol === 'comprador') {
+                return redirect()->route('productos.publicos')->with('error', 'Solo los agricultores pueden acceder a esta sección.');
+            } elseif ($rol === 'transportista') {
+                return redirect()->route('transportista.dashboard')->with('error', 'Solo los agricultores pueden acceder a esta sección.');
+            } else {
+                return redirect('/')->with('error', 'Acceso no autorizado.');
+            }
+        }
+
         $user = Auth::user();
         // Verificamos si el perfil está incompleto (basado en dirección)
         $perfilIncompleto = empty($user->departamento) ||
@@ -83,10 +96,21 @@ class ProductoController extends Controller
     public function destroy($id)
     {
         $producto = $this->obtenerProducto($id);
-        $producto->delete();
 
-        return redirect()->route('agricultor.dashboard')->with('success', 'Producto eliminado.');
+        if ($producto->detallesPedido()->exists()) {
+            return redirect()->route('agricultor.dashboard')
+                ->with('error', 'No puedes eliminar este producto porque ya ha sido parte de pedidos.');
+        }
+
+            // Eliminar relaciones con categorías
+            $producto->categorias()->detach();
+
+            // Eliminar el producto
+            $producto->delete();
+
+            return redirect()->route('agricultor.dashboard')->with('success', 'Producto eliminado correctamente.');
     }
+        
 
     // Métodos auxiliares
     private function validarProducto(Request $request)

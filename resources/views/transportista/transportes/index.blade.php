@@ -20,7 +20,7 @@
 
                     $estadoInfo = match($estado) {
                         'pendiente' => ['text' => 'text-yellow-700', 'bg' => 'bg-yellow-100', 'label' => '🕒 Pendiente'],
-                        'en_camino' => ['text' => 'text-blue-700', 'bg' => 'bg-blue-100', 'label' => '🚚 En camino'],
+                        'en_transporte' => ['text' => 'text-blue-700', 'bg' => 'bg-blue-100', 'label' => '🚚 En camino'],
                         'entregado' => ['text' => 'text-green-700', 'bg' => 'bg-green-100', 'label' => '✅ Entregado'],
                         default => ['text' => 'text-gray-700', 'bg' => 'bg-gray-100', 'label' => '⏳ Estado desconocido'],
                     };
@@ -86,7 +86,7 @@
                                         Iniciar entrega
                                     </button>
                                 </form>
-                            @elseif($estado === 'en_camino')
+                            @elseif($estado === 'en_transporte')
                                 <form method="POST" action="{{ route('transportista.transportes.entregado', $transporte->id) }}">
                                     @csrf
                                     <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold">

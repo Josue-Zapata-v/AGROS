@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet" />
 <!-- Tom Select JS -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <style>[x-cloak] { display: none !important; }</style>
 
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

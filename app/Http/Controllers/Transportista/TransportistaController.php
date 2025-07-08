@@ -14,12 +14,32 @@ class TransportistaController extends Controller
 {
     public function dashboard()
     {
+        if (!Auth::check() || Auth::user()->role !== 'transportista') {
+            $rol = Auth::user()->role ?? 'invitado';
+            if ($rol === 'comprador') {
+                return redirect()->route('productos.publicos')->with('error', 'Solo los transportistas pueden acceder a este panel.');
+            } elseif ($rol === 'agricultor') {
+                return redirect()->route('agricultor.dashboard')->with('error', 'Solo los transportistas pueden acceder a este panel.');
+            } else {
+                return redirect('/')->with('error', 'Acceso no autorizado.');
+            }
+        }
         
         $usuario = Auth::user();
         return view('transportista.dashboard', compact('usuario'));
     }
     public function pedidosDisponibles()
     {
+        if (!Auth::check() || Auth::user()->role !== 'transportista') {
+            $rol = Auth::user()->role ?? 'invitado';
+            if ($rol === 'comprador') {
+                return redirect()->route('catalogo.publico')->with('error', 'Solo los transportistas pueden acceder a este panel.');
+            } elseif ($rol === 'agricultor') {
+                return redirect()->route('agricultor.dashboard')->with('error', 'Solo los transportistas pueden acceder a este panel.');
+            } else {
+                return redirect('/')->with('error', 'Acceso no autorizado.');
+            }
+        }
         $transportistaId = Auth::id();
 
         $pedidos = Pedido::with(['agricultor', 'detalles.producto']) // trae detalles y producto
@@ -92,8 +112,12 @@ class TransportistaController extends Controller
 
         // Solo si está pendiente puede cambiar a en_camino
         if ($transporte->estado === 'pendiente') {
-            $transporte->estado = 'en_camino';
+            $transporte->estado = 'en_transporte';
             $transporte->save();
+
+            // Cambiar estado del pedido relacionado
+            $transporte->pedido->estado = 'en_transporte';
+            $transporte->pedido->save();
 
             return back()->with('success', 'Entrega iniciada correctamente.');
         }
@@ -111,9 +135,13 @@ class TransportistaController extends Controller
         }
 
         // Solo si está en camino puede marcarse como entregado
-        if ($transporte->estado === 'en_camino') {
+        if ($transporte->estado === 'en_transporte') {
             $transporte->estado = 'entregado';
             $transporte->save();
+
+            // Cambiar estado del pedido relacionado
+            $transporte->pedido->estado = 'entregado';
+            $transporte->pedido->save();
 
             return back()->with('success', 'Entrega confirmada con éxito.');
         }

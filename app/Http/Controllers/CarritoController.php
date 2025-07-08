@@ -16,11 +16,16 @@ class CarritoController extends Controller
 
 
         if (Auth::check() && Auth::user()->role !== 'comprador') {
-            // Redirige o lanza error
-            return redirect()->route('agricultor.dashboard')->with('error', 'Solo los compradores pueden acceder al carrito.');
+            $rol = Auth::user()->role;
 
-            // También puedes usar:
-            // abort(403, 'Acceso no autor
+            // Redirige al dashboard correspondiente según el rol
+            if ($rol === 'agricultor') {
+                return redirect()->route('agricultor.dashboard')->with('error', 'Solo los compradores pueden acceder al carrito.');
+            } elseif ($rol === 'transportista') {
+                return redirect()->route('transportista.dashboard')->with('error', 'Solo los compradores pueden acceder al carrito.');
+            } else {
+                return redirect('/')->with('error', 'Acceso no autorizado.');
+            }
         }
         
         $carrito = session()->get('carrito', []);

@@ -40,10 +40,18 @@
 
                     <div class="flex justify-between items-center mb-1">
                         <h2 class="font-semibold text-lg leading-snug">{{ $producto->nombre }}</h2>
-                        <span class="bg-[#dff7d9] text-[#1b462b] text-xs font-semibold rounded-full px-3 py-1 select-none">
-                            Disponible
-                        </span>
+
+                        @if ($producto->stock > 0)
+                            <span class="bg-[#dff7d9] text-[#1b462b] text-xs font-semibold rounded-full px-3 py-1 select-none">
+                                Disponible
+                            </span>
+                        @else
+                            <span class="bg-[#fceaea] text-[#d94a4a] text-xs font-semibold rounded-full px-3 py-1 select-none">
+                                Agotado
+                            </span>
+                        @endif
                     </div>
+
 
                     <p class="text-sm text-gray-700 mb-1">{{ $producto->stock }} kg disponibles</p>
                     <p class="font-extrabold text-xl text-[#1b462b] mb-2">S/ {{ number_format($producto->precio, 2) }}/kg</p>
@@ -55,15 +63,41 @@
                             <i class="fas fa-edit"></i>
                             Editar
                         </a>
-                        <form action="{{ route('productos.destroy', $producto->id) }}" method="POST"
-                              onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="border border-[#f3a6a6] text-[#d94a4a] rounded-md px-4 py-2 hover:bg-[#fceaea] transition">
+                        {{-- Contenedor Alpine --}}
+                        <div x-data="{ open: false }" class="relative flex-1 flex justify-center">
+                            <!-- Botón que abre el modal -->
+                            <button type="button"
+                                @click="open = true"
+                                class="border border-[#f3a6a6] text-[#d94a4a] rounded-md px-4 py-2 hover:bg-[#fceaea] transition">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
-                        </form>
+
+                            <!-- Modal de confirmación -->
+                            <div x-show="open" x-cloak
+                                class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                                <div class="bg-white rounded-xl p-6 max-w-sm shadow-lg border border-red-200 w-full mx-4">
+                                    <h2 class="text-lg font-bold text-red-700 mb-2">¿Eliminar producto?</h2>
+                                    <p class="text-gray-600 mb-4">Esta acción no se puede deshacer. ¿Estás seguro?</p>
+
+                                    <div class="flex justify-end gap-3">
+                                        <button @click="open = false" type="button"
+                                            class="px-4 py-2 rounded-md text-sm bg-gray-200 hover:bg-gray-300 text-gray-800">
+                                            Cancelar
+                                        </button>
+
+                                        <!-- Único formulario de eliminación -->
+                                        <form method="POST" action="{{ route('productos.destroy', $producto->id) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="px-4 py-2 rounded-md text-sm bg-red-600 hover:bg-red-700 text-white font-semibold">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </article>
             @endforeach
